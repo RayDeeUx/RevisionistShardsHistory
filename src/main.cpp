@@ -48,14 +48,20 @@ class $modify(MyGJRewardObject, GJRewardObject) {
 		if (!Mod::get()->getSettingValue<bool>("enabled")) return original;
 		if (!original) return original;
 
+		log::info("original is not nullptr");
+
 		const int rewardType = static_cast<int>(type);
 		if (rewardType == 0x6 || rewardType == 0x7 || rewardType == 0x8 || rewardType == 0x9 || rewardType == 0xF) return original;
+
+		log::info("rewardType is a shard");
 
 		const std::string& shardToUse = Mod::get()->getSettingValue<std::string>("shardToUse");
 		const int origShardAmt = GameStatsManager::get()->getStat(stringToConstChar(shardToUse));
 
 		SpecialRewardItem newEnum = stringToEnum(shardToUse);
 		const int newTotal = (origShardAmt + total > 100) ? 100 - origShardAmt : total;
+
+		log::info("giving {}x {} shards", newTotal, shardToUse);
 
 		GJRewardObject* replacement = GJRewardObject::create(newEnum, newTotal, itemID);
 		if (!replacement || newTotal < 1) return original;
