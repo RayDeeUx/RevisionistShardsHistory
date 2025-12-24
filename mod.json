@@ -1,0 +1,40 @@
+{
+	"geode": "4.7.0",
+	"gd": {
+		"win": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074",
+		"android": "2.2074"
+	},
+	"id": "raydeeux.revisionistshardshistory",
+	"name": "RevisionistShardsHistory",
+	"version": "v1.0.0",
+	"developer": "RayDeeUx",
+	"description": "Because some people are too stubborn to use icon unlock hacks.",
+	"repository": "https://github.com/RayDeeUx/RevisionistShardsHistory",
+	"settings": {
+		"enabled": {
+			"name": "Enabled",
+			"description": "Toggles the mod.",
+			"type": "bool",
+			"default": true
+		},
+		"shardToUse": {
+			"name": "Shard To Replace With Instead",
+			"type": "string",
+			"default": "Fire",
+			"one-of": [
+				"Fire", "Ice", "Poison", "Shadow", "Lava",
+				"Earth", "Blood", "Metal", "Light", "Soul"
+			]
+		}
+	},
+	"issues": {
+		"url": "https://discord.com/channels/911701438269386882/1205523212444639292",
+		"info": "Ping me <cl>(@erymanthus)</c> in the Geode SDK Discord server's <cl>#help</c> channel if you need help. <cr>DMs are NOT accepted.</c>"
+	},
+	"links": {
+		"community": "https://discord.gg/WqZBYdBWZW",
+		"homepage": "https://discord.com/channels/822510988409831486/1206371881222144020"
+	}
+}
