@@ -31,7 +31,7 @@
 		"overrideDiamondsAndOrbs": {
 			"name": "Override Diamonds and Orbs",
 			"type": "bool",
-			"default": "false
+			"default": false
 		}
 	},
 	"issues": {
