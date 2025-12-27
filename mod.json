@@ -9,7 +9,7 @@
 	"id": "raydeeux.revisionistshardshistory",
 	"name": "RevisionistShardsHistory",
 	"version": "v0.0.1-alpha.1",
-	"developer": "RayDeeUx",
+	"developers": ["RayDeeUx", "TheSillyDoggo"],
 	"description": "Because some people are too stubborn to use icon unlock hacks.",
 	"repository": "https://github.com/RayDeeUx/RevisionistShardsHistory",
 	"settings": {
