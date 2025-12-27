@@ -1,3 +1,4 @@
+#include <Geode/modify/GameStatsManager.hpp>
 #include <Geode/modify/GJRewardObject.hpp>
 
 using namespace geode::prelude;
@@ -28,6 +29,19 @@ constexpr std::array<std::pair<std::string_view, const char*>, 10> settingsToGSM
 	{"Soul",	"27"}
 }};
 
+constexpr std::array<std::pair<SpecialRewardItem, const char*>, 10> enumToGSMKeys{{
+	{SpecialRewardItem::FireShard,		"16"},
+	{SpecialRewardItem::IceShard,		"17"},
+	{SpecialRewardItem::PoisonShard,	"18"},
+	{SpecialRewardItem::ShadowShard,	"19"},
+	{SpecialRewardItem::LavaShard,		"20"},
+	{SpecialRewardItem::EarthShard,		"23"},
+	{SpecialRewardItem::BloodShard,		"24"},
+	{SpecialRewardItem::MetalShard,		"25"},
+	{SpecialRewardItem::LightShard,		"26"},
+	{SpecialRewardItem::SoulShard,		"27"}
+}};
+
 constexpr SpecialRewardItem stringToEnum(const std::string_view s) {
 	for (auto const &p : settingsToShards) {
 		if (p.first == s) return p.second;
@@ -41,6 +55,40 @@ constexpr const char* stringToConstChar(const std::string_view s) {
 	}
 	return "16";
 }
+
+constexpr const char* enumToConstChar(const SpecialRewardItem s) {
+	for (auto const &p : enumToGSMKeys) {
+		if (p.first == s) return p.second;
+	}
+	return "16";
+}
+
+constexpr std::string_view enumToString(const SpecialRewardItem v) {
+	for (auto const &p : settingsToShards) {
+		if (p.second == v) return p.first;
+	}
+	return {};
+}
+
+class $modify(MyGameStatsManager, GameStatsManager) {
+	void registerRewardsFromItem(GJRewardItem* item) {
+		if (!Mod::get()->getSettingValue<bool>("enabled")) return GameStatsManager::registerRewardsFromItem(item);
+		for (GJRewardObject* obj : CCArrayExt<GJRewardObject*>(m_rewardObjects)) {
+			if (!obj->isSpecialType()) continue;
+			log::info("originally rewarding {} of shard type {} shard", obj->m_total, enumToString(obj->m_specialRewardItem));
+
+			const int shardCount = GameStatsManager::get()->getStat(enumToConstChar(obj->m_specialRewardItem));
+			if (shardCount > 99) continue;
+
+			const std::string& shardToUse = Mod::get()->getSettingValue<std::string>("shardToUse");
+			obj->m_specialRewardItem = stringToEnum(shardToUse);
+			if (shardCount + obj->m_total > 99) obj->m_total = 100 - shardCount;
+
+			log::info("now rewarding {} of shard type {} shard", obj->m_total, shardToUse);
+		}
+		GameStatsManager::registerRewardsFromItem(item);
+	}
+};
 
 class $modify(MyGJRewardObject, GJRewardObject) {
 	static GJRewardObject* create(SpecialRewardItem type, int total, int itemID) {
