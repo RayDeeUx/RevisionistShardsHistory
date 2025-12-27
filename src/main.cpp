@@ -73,7 +73,7 @@ class $modify(MyGameStatsManager, GameStatsManager) {
 	void registerRewardsFromItem(GJRewardItem* item) {
 		if (!Mod::get()->getSettingValue<bool>("enabled")) return GameStatsManager::registerRewardsFromItem(item);
 		for (GJRewardObject* obj : CCArrayExt<GJRewardObject*>(item->m_rewardObjects)) {
-			if (!obj->isSpecialTyle() && static_cast<int>(obj->m_specialRewardItem) != 7 && static_cast<int>(obj->m_specialRewardItem) != 8) continue;
+			if (!obj->isSpecialType() && static_cast<int>(obj->m_specialRewardItem) != 7 && static_cast<int>(obj->m_specialRewardItem) != 8) continue;
 			if (!Mod::get()->getSettingValue<bool>("overrideDiamondsAndOrbs")) continue;
 
 			const std::string& shardToUse = Mod::get()->getSettingValue<std::string>("shardToUse");
@@ -82,7 +82,7 @@ class $modify(MyGameStatsManager, GameStatsManager) {
 
 			log::info("originally rewarding {} of shard type {} shard", obj->m_total, shardOriginally);
 
-			const int shardCount = GameStatsManager::get()->getStat(enumToConstChar(stringToConstChar(shardToUse)));
+			const int shardCount = GameStatsManager::get()->getStat(stringToConstChar(shardToUse));
 			if (shardCount > 99) continue;
 
 			obj->m_specialRewardItem = stringToEnum(shardToUse);
