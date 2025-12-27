@@ -1,5 +1,4 @@
 #include <Geode/modify/GameStatsManager.hpp>
-#include <Geode/modify/GJRewardObject.hpp>
 
 using namespace geode::prelude;
 
@@ -74,46 +73,23 @@ class $modify(MyGameStatsManager, GameStatsManager) {
 	void registerRewardsFromItem(GJRewardItem* item) {
 		if (!Mod::get()->getSettingValue<bool>("enabled")) return GameStatsManager::registerRewardsFromItem(item);
 		for (GJRewardObject* obj : CCArrayExt<GJRewardObject*>(item->m_rewardObjects)) {
-			if (!obj->isSpecialType()) continue;
-			log::info("originally rewarding {} of shard type {} shard", obj->m_total, enumToString(obj->m_specialRewardItem));
-
-			const int shardCount = GameStatsManager::get()->getStat(enumToConstChar(obj->m_specialRewardItem));
-			if (shardCount > 99) continue;
+			if (!obj->isSpecialTyle() && static_cast<int>(obj->m_specialRewardItem) != 7 && static_cast<int>(obj->m_specialRewardItem) != 8) continue;
+			if (!Mod::get()->getSettingValue<bool>("overrideDiamondsAndOrbs")) continue;
 
 			const std::string& shardToUse = Mod::get()->getSettingValue<std::string>("shardToUse");
+			const std::string_view shardOriginally = enumToString(obj->m_specialRewardItem);
+			if (shardToUse == shardOriginally) continue;
+
+			log::info("originally rewarding {} of shard type {} shard", obj->m_total, shardOriginally);
+
+			const int shardCount = GameStatsManager::get()->getStat(enumToConstChar(stringToConstChar(shardToUse)));
+			if (shardCount > 99) continue;
+
 			obj->m_specialRewardItem = stringToEnum(shardToUse);
 			if (shardCount + obj->m_total > 99) obj->m_total = 100 - shardCount;
 
 			log::info("now rewarding {} of shard type {} shard", obj->m_total, shardToUse);
 		}
 		GameStatsManager::registerRewardsFromItem(item);
-	}
-};
-
-class $modify(MyGJRewardObject, GJRewardObject) {
-	static GJRewardObject* create(SpecialRewardItem type, int total, int itemID) {
-		GJRewardObject* original = GJRewardObject::create(type, total, itemID);
-		if (!Mod::get()->getSettingValue<bool>("enabled")) return original;
-		if (!original) return original;
-
-		log::info("original is not nullptr");
-
-		const int rewardType = static_cast<int>(type);
-		if (rewardType == 0x6 || rewardType == 0x7 || rewardType == 0x8 || rewardType == 0x9 || rewardType == 0xF) return original;
-
-		log::info("rewardType is a shard");
-
-		const std::string& shardToUse = Mod::get()->getSettingValue<std::string>("shardToUse");
-		const int origShardAmt = GameStatsManager::get()->getStat(stringToConstChar(shardToUse));
-
-		SpecialRewardItem newEnum = stringToEnum(shardToUse);
-		const int newTotal = (origShardAmt + total > 100) ? 100 - origShardAmt : total;
-
-		log::info("giving {}x {} shards", newTotal, shardToUse);
-
-		GJRewardObject* replacement = GJRewardObject::create(newEnum, newTotal, itemID);
-		if (!replacement || newTotal < 1) return original;
-
-		return replacement;
 	}
 };

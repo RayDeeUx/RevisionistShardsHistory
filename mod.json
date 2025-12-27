@@ -27,6 +27,11 @@
 				"Fire", "Ice", "Poison", "Shadow", "Lava",
 				"Earth", "Blood", "Metal", "Light", "Soul"
 			]
+		},
+		"overrideDiamondsAndOrbs": {
+			"name": "Override Diamonds and Orbs",
+			"type": "bool",
+			"default": "false
 		}
 	},
 	"issues": {
