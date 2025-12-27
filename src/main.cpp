@@ -73,7 +73,7 @@ constexpr std::string_view enumToString(const SpecialRewardItem v) {
 class $modify(MyGameStatsManager, GameStatsManager) {
 	void registerRewardsFromItem(GJRewardItem* item) {
 		if (!Mod::get()->getSettingValue<bool>("enabled")) return GameStatsManager::registerRewardsFromItem(item);
-		for (GJRewardObject* obj : CCArrayExt<GJRewardObject*>(m_rewardObjects)) {
+		for (GJRewardObject* obj : CCArrayExt<GJRewardObject*>(item->m_rewardObjects)) {
 			if (!obj->isSpecialType()) continue;
 			log::info("originally rewarding {} of shard type {} shard", obj->m_total, enumToString(obj->m_specialRewardItem));
 
